@@ -1,0 +1,219 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "4df17634",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "The first 5 Values of data is:\n",
+      "     Outlook Temperature Humidity   Windy PlayTennis\n",
+      "0     Sunny         Hot     High    Weak         No\n",
+      "1     Sunny         Hot     High  Strong         No\n",
+      "2  Overcast         Hot     High    Weak        Yes\n",
+      "3      Rain        Mild     High    Weak        Yes\n",
+      "4      Rain        Cool   Normal    Weak        Yes\n",
+      "\n",
+      "The First 5 values of the train data is\n",
+      "     Outlook Temperature Humidity   Windy\n",
+      "0     Sunny         Hot     High    Weak\n",
+      "1     Sunny         Hot     High  Strong\n",
+      "2  Overcast         Hot     High    Weak\n",
+      "3      Rain        Mild     High    Weak\n",
+      "4      Rain        Cool   Normal    Weak\n",
+      "\n",
+      "The First 5 values of train output is\n",
+      " 0     No\n",
+      "1     No\n",
+      "2    Yes\n",
+      "3    Yes\n",
+      "4    Yes\n",
+      "Name: PlayTennis, dtype: object\n",
+      "\n",
+      "Now the Train output is\n",
+      "    Outlook  Temperature  Humidity  Windy\n",
+      "0        2            1         0      1\n",
+      "1        2            1         0      0\n",
+      "2        0            1         0      1\n",
+      "3        1            2         0      1\n",
+      "4        1            0         1      1\n",
+      "\n",
+      "Now the Train output is\n",
+      " [0 0 1 1 1 0 1 0 1 1 1 1 1 0]\n",
+      "Accuracy is: 0.6666666666666666\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\Dell\\AppData\\Local\\Temp\\ipykernel_22760\\3744179182.py:16: SettingWithCopyWarning: \n",
+      "A value is trying to be set on a copy of a slice from a DataFrame.\n",
+      "Try using .loc[row_indexer,col_indexer] = value instead\n",
+      "\n",
+      "See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n",
+      "  X.Outlook = le_outlook.fit_transform(X.Outlook)\n",
+      "C:\\Users\\Dell\\AppData\\Local\\Temp\\ipykernel_22760\\3744179182.py:19: SettingWithCopyWarning: \n",
+      "A value is trying to be set on a copy of a slice from a DataFrame.\n",
+      "Try using .loc[row_indexer,col_indexer] = value instead\n",
+      "\n",
+      "See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n",
+      "  X.Temperature = le_Temperature.fit_transform(X.Temperature)\n",
+      "C:\\Users\\Dell\\AppData\\Local\\Temp\\ipykernel_22760\\3744179182.py:22: SettingWithCopyWarning: \n",
+      "A value is trying to be set on a copy of a slice from a DataFrame.\n",
+      "Try using .loc[row_indexer,col_indexer] = value instead\n",
+      "\n",
+      "See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n",
+      "  X.Humidity = le_Humidity.fit_transform(X.Humidity)\n",
+      "C:\\Users\\Dell\\AppData\\Local\\Temp\\ipykernel_22760\\3744179182.py:25: SettingWithCopyWarning: \n",
+      "A value is trying to be set on a copy of a slice from a DataFrame.\n",
+      "Try using .loc[row_indexer,col_indexer] = value instead\n",
+      "\n",
+      "See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n",
+      "  X.Windy = le_Windy.fit_transform(X.Windy)\n"
+     ]
+    }
+   ],
+   "source": [
+    "\n",
+    "import pandas as pd\n",
+    "from sklearn import tree\n",
+    "from sklearn.preprocessing import LabelEncoder\n",
+    "from sklearn.naive_bayes import GaussianNB\n",
+    "\n",
+    "data = pd.read_csv('naivebayestennisdata.csv')\n",
+    "print(\"The first 5 Values of data is:\\n\", data.head())\n",
+    "\n",
+    "X = data.iloc[:, :-1]\n",
+    "print(\"\\nThe First 5 values of the train data is\\n\", X.head())\n",
+    "\n",
+    "y = data.iloc[:, -1]\n",
+    "print(\"\\nThe First 5 values of train output is\\n\", y.head())\n",
+    "\n",
+    "le_outlook = LabelEncoder()\n",
+    "X.Outlook = le_outlook.fit_transform(X.Outlook)\n",
+    "\n",
+    "le_Temperature = LabelEncoder()\n",
+    "X.Temperature = le_Temperature.fit_transform(X.Temperature)\n",
+    "\n",
+    "le_Humidity = LabelEncoder()\n",
+    "X.Humidity = le_Humidity.fit_transform(X.Humidity)\n",
+    "\n",
+    "le_Windy = LabelEncoder()\n",
+    "X.Windy = le_Windy.fit_transform(X.Windy)\n",
+    "\n",
+    "print(\"\\nNow the Train output is\\n\", X.head())\n",
+    "\n",
+    "le_PlayTennis = LabelEncoder()\n",
+    "y = le_PlayTennis.fit_transform(y)\n",
+    "print(\"\\nNow the Train output is\\n\", y)\n",
+    "\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)\n",
+    "\n",
+    "classifier = GaussianNB()\n",
+    "classifier.fit(X_train, y_train)\n",
+    "\n",
+    "from sklearn.metrics import accuracy_score\n",
+    "print(\"Accuracy is:\", accuracy_score(classifier.predict(X_test), y_test))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "4160a6d6",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Collecting package metadata (current_repodata.json): ...working... done\n",
+      "Solving environment: ...working... failed with initial frozen solve. Retrying with flexible solve.\n",
+      "Collecting package metadata (repodata.json): ...working... done\n",
+      "Solving environment: ...working... failed with initial frozen solve. Retrying with flexible solve.\n",
+      "Solving environment: ...working... \n",
+      "Found conflicts! Looking for incompatible packages.\n",
+      "This can take several minutes.  Press CTRL-C to abort.\n",
+      "failed\n",
+      "\n",
+      "Note: you may need to restart the kernel to use updated packages.\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Building graph of deps:   0%|          | 0/5 [00:00<?, ?it/s]\n",
+      "Examining numpy=1.18.5:   0%|          | 0/5 [00:00<?, ?it/s]\n",
+      "Examining @/win-64::__win==0=0:  20%|##        | 1/5 [00:00<00:00,  6.39it/s]\n",
+      "Examining @/win-64::__win==0=0:  40%|####      | 2/5 [00:00<00:00, 12.71it/s]\n",
+      "Examining @/win-64::__archspec==1=x86_64:  40%|####      | 2/5 [00:00<00:00, 12.71it/s]\n",
+      "Examining @/win-64::__cuda==12.1=0:  60%|######    | 3/5 [00:00<00:00, 12.71it/s]      \n",
+      "Examining python=3.9:  80%|########  | 4/5 [00:00<00:00, 12.71it/s]              \n",
+      "                                                                   \n",
+      "\n",
+      "Determining conflicts:   0%|          | 0/5 [00:00<?, ?it/s]\n",
+      "Examining conflict for numpy python:   0%|          | 0/5 [00:00<?, ?it/s]\n",
+      "                                                                          \n",
+      "\n",
+      "UnsatisfiableError: The following specifications were found\n",
+      "to be incompatible with the existing python installation in your environment:\n",
+      "\n",
+      "Specifications:\n",
+      "\n",
+      "  - numpy=1.18.5 -> python[version='>=3.6,<3.7.0a0|>=3.7,<3.8.0a0|>=3.8,<3.9.0a0']\n",
+      "\n",
+      "Your python: python=3.9\n",
+      "\n",
+      "If python is on the left-most side of the chain, that's the version you've asked for.\n",
+      "When python appears to the right, that indicates that the thing on the left is somehow\n",
+      "not available for the python version you are constrained to. Note that conda will not\n",
+      "change your python version to a different minor version unless you explicitly specify\n",
+      "that.\n",
+      "\n",
+      "\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "conda install numpy=1.18.5"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7a7efc34",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
